@@ -37,6 +37,7 @@
             border-radius: 10px;
             color: white;
             font-size: 15px;
+            margin: 10px 0;
         }
         button:hover{
             background-color: deepskyblue;
@@ -51,10 +52,22 @@
         <br><br>
         <input type="password" placeholder="Senha" id="senha">
         <br><br>
-        <button onclick="logar(); return false">Entrar</button>
+        <button onclick="logar(); return false" id="btnEntrar">Entrar</button>
+        <button onclick="mostrarCadastro(); return false" id="btnCadastrar">Cadastrar</button>
+
+        <form id="cadastro-form" style="display: none;">
+            <input type="text" placeholder="Nome de usuário" id="cadastro-usuario">
+            <br><br>
+            <input type="password" placeholder="Nova senha" id="cadastro-senha">
+            <br><br>
+            <button onclick="realizarCadastro(); return false">Cadastrar</button>
+            <button onclick="voltar(); return false">Voltar</button>
+        </form>
     </div>
 
     <script>
+        var usuariosCadastrados = [];
+
         function logar(){
             var login = document.getElementById('login').value;
             var senha = document.getElementById('senha').value;
@@ -62,10 +75,60 @@
             if(login == "admin" && senha =="admin"){
                 alert('Sucesso!');
                 location.href = "index.html";
-            }else{
-                alert('Usuário ou senha incorretos');
+            }
+
+            var usuarioExistente = usuariosCadastrados.find(function(usuario){
+                return usuario.nome === login && usuario.senha === senha;
+            });
+
+            if(usuarioExistente){
+                alert('Sucesso!');
+                location.href = "index.html";
             }
         }
+        
+        function mostrarCadastro(){
+            var formLogin = document.getElementById('login');
+            var formSenha = document.getElementById('senha');
+            var formCadastro = document.getElementById('cadastro-form');
+            var btnCadastrar = document.getElementById('btnCadastrar');
+            var btnEntrar = document.getElementById('btnEntrar');
+
+            formLogin.value = '';
+            formSenha.value = '';
+            formLogin.style.display = 'none';
+            formSenha.style.display = 'none';
+            formCadastro.style.display = 'block';
+            btnCadastrar.style.display = 'none';
+            btnEntrar.style.display = 'none';
+        }
+
+        function realizarCadastro(){
+            var cadastroUsuario = document.getElementById('cadastro-usuario').value;
+            var cadastroSenha = document.getElementById('cadastro-senha').value;
+
+            var usuarioExistente = usuariosCadastrados.find(function(usuario){
+                return usuario.nome === cadastroUsuario;
+            });
+
+            if(usuarioExistente){
+                alert('Usuário já cadastrado. Por favor, escolha outro nome de usuário');
+            } else {
+                var novoUsuario = {
+                    nome: cadastroUsuario,
+                    senha: cadastroSenha
+                };
+
+                usuariosCadastrados.push(novoUsuario);
+
+                alert('Cadastro realizado com sucesso!');
+                location.reload();
+            }
+        }
+        function voltar(){
+            location.reload();
+        }
+
     </script>
 </body>
 </html>
